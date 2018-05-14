@@ -21,11 +21,13 @@ import com.example.minchev.dailysmarts.dataRoom.QuoteViewModel;
 import com.example.minchev.dailysmarts.databinding.CardQuoteBinding;
 import com.example.minchev.dailysmarts.databinding.FragmentDailyBinding;
 import com.example.minchev.dailysmarts.ui.OnFragmentDataListener;
+import com.example.minchev.dailysmarts.ui.OnShareListener;
 
 public class DailyFragment extends Fragment {
     private FragmentDailyBinding binding;
     private QuoteViewModel mQuoteViewModel;
     private OnFragmentDataListener mListener;
+    private OnShareListener mShareListener;
     private boolean isLiked = false;
     private CardQuoteBinding gprCardQuote;
     private QuoteEntity quoteEntity = new QuoteEntity();
@@ -55,16 +57,26 @@ public class DailyFragment extends Fragment {
 
         if (context instanceof OnFragmentDataListener) {
             mListener = (OnFragmentDataListener) context;
+
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnFragmentListener");
         }
+
+        if (context instanceof OnShareListener) {
+            mShareListener = (OnShareListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnShareListener");
+        }
+
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        mShareListener = null;
     }
 
 
@@ -121,6 +133,10 @@ public class DailyFragment extends Fragment {
             }
 
         });
+
+        //share button
+        gprCardQuote.imgShare.setOnClickListener(v-> mShareListener.onShare(data));
+
     }
 
     private void deleteData(Quote data) {

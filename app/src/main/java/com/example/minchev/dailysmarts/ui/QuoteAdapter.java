@@ -16,7 +16,8 @@ import java.util.List;
 public class QuoteAdapter extends RecyclerView.Adapter<QuoteHolder> {
 
     private List<QuoteEntity> data;
-    private OnFragmentDataListener listener;
+    private OnFragmentDataListener mListener;
+    private OnShareListener mSharelistener;
 
     public QuoteAdapter() {
 
@@ -35,7 +36,7 @@ public class QuoteAdapter extends RecyclerView.Adapter<QuoteHolder> {
     @Override
     public void onBindViewHolder(@NonNull QuoteHolder holder, int position) {
         QuoteEntity current = data.get(position);
-        holder.bind(current, listener);
+        holder.bind(current, mListener, mSharelistener);
     }
 
 
@@ -52,7 +53,8 @@ public class QuoteAdapter extends RecyclerView.Adapter<QuoteHolder> {
         else return data.size();
     }
 
-    public void setListener(QuoteFragment listener) {
-        this.listener = listener;
+    public void setListener(OnFragmentDataListener listener, OnShareListener mShareListener) {
+        this.mListener = listener;
+        this.mSharelistener = mShareListener;
     }
 }

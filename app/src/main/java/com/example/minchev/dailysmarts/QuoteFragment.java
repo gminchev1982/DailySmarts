@@ -1,6 +1,7 @@
 package com.example.minchev.dailysmarts;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,6 +16,7 @@ import com.example.minchev.dailysmarts.dataRoom.QuoteEntity;
 import com.example.minchev.dailysmarts.dataRoom.QuoteViewModel;
 import com.example.minchev.dailysmarts.databinding.FragmentQuoteBinding;
 import com.example.minchev.dailysmarts.ui.OnFragmentDataListener;
+import com.example.minchev.dailysmarts.ui.OnShareListener;
 import com.example.minchev.dailysmarts.ui.QuoteAdapter;
 
 import java.util.List;
@@ -25,7 +27,8 @@ public class QuoteFragment extends Fragment implements OnFragmentDataListener {
     FragmentQuoteBinding binding;
     private QuoteViewModel mQuoteViewModel;
     private List<QuoteEntity> weatherList = null;
-
+    private OnShareListener mShareListener;
+    private OnFragmentDataListener mListener;
     public QuoteFragment() {
         // Required empty public constructor
     }
@@ -55,7 +58,7 @@ public class QuoteFragment extends Fragment implements OnFragmentDataListener {
         binding.recDailyView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         adapter = new QuoteAdapter();
-        adapter.setListener(this);
+        adapter.setListener(mListener, mShareListener);
         binding.recDailyView.setAdapter(adapter);
 
         mQuoteViewModel.getAll().observe(this, (List<QuoteEntity> quotes) -> {
@@ -69,5 +72,32 @@ public class QuoteFragment extends Fragment implements OnFragmentDataListener {
         adapter.notifyDataSetChanged();
     }
 
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (context instanceof OnFragmentDataListener) {
+            mListener = (OnFragmentDataListener) context;
+
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentListener");
+        }
+
+        if (context instanceof OnShareListener) {
+            mShareListener = (OnShareListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mShareListener = null;
+        mListener = null;
+    }
 
 }

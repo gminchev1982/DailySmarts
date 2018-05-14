@@ -32,4 +32,5 @@ public class Quote {
     public String getQuoteLink() {
         return quoteLink;
     }
+
 }
